@@ -1,3 +1,5 @@
+<p align="center"><img src="https://raw.githubusercontent.com/go-syndication/brand/main/social/go-syndication.png" alt="go-syndication/feed" width="720"></p>
+
 # feed
 
 [![CI](https://github.com/go-syndication/feed/actions/workflows/ci.yml/badge.svg)](https://github.com/go-syndication/feed/actions/workflows/ci.yml)
