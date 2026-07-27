@@ -1,38 +1,18 @@
 package feed
 
 import (
-	"strings"
 	"time"
+
+	"github.com/go-datetime/dates"
 )
 
-// dateLayouts is the ordered set of layouts tried by parseDate. RSS uses
-// RFC822/RFC1123 variants; Atom and JSON Feed use RFC3339.
-var dateLayouts = []string{
-	time.RFC1123Z,
-	time.RFC1123,
-	time.RFC3339,
-	time.RFC3339Nano,
-	"Mon, 02 Jan 2006 15:04:05 -0700",
-	"Mon, 02 Jan 2006 15:04:05 MST",
-	"02 Jan 2006 15:04:05 -0700",
-	"02 Jan 2006 15:04:05 MST",
-	"2006-01-02T15:04:05Z07:00",
-	"2006-01-02 15:04:05",
-	"2006-01-02",
-}
-
-// parseDate tries each known layout in turn and returns the zero time.Time
-// when the input is empty or matches none of them. It never reports an error
-// so that a single malformed date cannot fail an entire feed parse.
+// parseDate parses a feed date — RSS RFC 822/1123 variants, Atom and JSON Feed
+// RFC 3339, and bare `YYYY-MM-DD` dates — returning the zero time.Time for
+// empty or unparseable input so a single malformed date never fails an entire
+// feed parse. The real-world format zoo (including named-zone abbreviations and
+// 2-digit years) lives in the shared go-datetime/dates library so every fleet
+// consumer reuses one table instead of maintaining its own.
 func parseDate(s string) time.Time {
-	s = strings.TrimSpace(s)
-	if s == "" {
-		return time.Time{}
-	}
-	for _, layout := range dateLayouts {
-		if t, err := time.Parse(layout, s); err == nil {
-			return t
-		}
-	}
-	return time.Time{}
+	t, _ := dates.Parse(s)
+	return t
 }
